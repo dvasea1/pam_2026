@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_pam/category_widget.dart';
-import 'package:test_pam/list_items/categories_carousel.dart';
+import 'package:test_pam/list_items/categories_carousel_list_item.dart';
 
 class CategoriesCarouselWidget extends StatelessWidget {
   const CategoriesCarouselWidget({super.key, required this.item});
@@ -9,19 +9,22 @@ class CategoriesCarouselWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      child: ListView.builder(
-        itemCount: item.categories.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return CategoryWidget(
-            title: item.categories[index],
-            onTap: () {
-              debugPrint('Ontap $index');
-            },
-          );
-        },
+    return Padding(
+      padding: const EdgeInsets.only(top: 24, bottom: 24),
+      child: SizedBox(
+        height: 172,
+        child: ListView.builder(
+          itemCount: item.categories.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            return CategoryWidget(
+              category: item.categories[index],
+              onTap: () {
+                debugPrint('Ontap $index');
+              },
+            );
+          },
+        ),
       ),
     );
   }

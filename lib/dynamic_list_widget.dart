@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_pam/list_items/categories_carousel.dart';
+import 'package:test_pam/list_items/categories_carousel_list_item.dart';
 import 'package:test_pam/list_items/list_item.dart';
 import 'package:test_pam/list_items/product_list_item.dart';
 import 'package:test_pam/list_items/section_list_item.dart';
