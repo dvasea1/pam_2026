@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:test_pam/counter_widget.dart';
 import 'package:test_pam/dynamic_list_widget.dart';
-import 'package:test_pam/food_delvery_home_page.dart';
+import 'package:test_pam/screens/home/food_delvery_home_page.dart';
 import 'package:test_pam/listview_widget.dart';
 import 'package:test_pam/title_widget.dart';
 
@@ -17,7 +18,7 @@ class TestPamWidget extends StatefulWidget {
 class _TestPamState extends State<TestPamWidget> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       home: Scaffold(
         appBar: AppBar(title: Text('Simple app bar')),
         body: Container(
