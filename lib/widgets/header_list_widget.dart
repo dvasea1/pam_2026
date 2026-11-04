@@ -6,16 +6,17 @@ import 'package:test_pam/resources/app_strings.dart';
 import 'package:test_pam/resources/app_text_styles.dart';
 
 class HeaderListWidget extends StatelessWidget {
-  const HeaderListWidget({super.key, required this.item, required this.onTapLocation});
+  const HeaderListWidget({super.key, required this.item, required this.onTapLocation, required this.onTapMenu});
 
   final HeaderListItem item;
   final VoidCallback onTapLocation;
+  final VoidCallback onTapMenu;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        InkWell(child: AppIcons.menuIcon),
+        InkWell(onTap: onTapMenu,child: AppIcons.menuIcon,),
         SizedBox(width: 18),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

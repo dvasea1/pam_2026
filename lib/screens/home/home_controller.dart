@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:test_pam/models/product.dart';
+import 'package:test_pam/models/user.dart';
 
 import '../../list_items/categories_carousel_list_item.dart';
 import '../../list_items/greeting_list_item.dart';
@@ -28,18 +33,40 @@ class HomeController extends GetxController {
   }
 
   Future<int> func1() async {
-    await Future.delayed(Duration(seconds:1));
+    await Future.delayed(Duration(seconds: 1));
     return 1;
   }
+
   Future<String> func2() async {
-    await Future.delayed(Duration(seconds:4));
+    await Future.delayed(Duration(seconds: 4));
     return 'Hello';
   }
 
-  Future getItems() async {
+  void serializeProduct() {
+    Product product = Product(title: 'Product 1', price: 1.2);
+    var jsonProduct = jsonEncode(product);
+    debugPrint('jsonProduct: $jsonProduct');
+    var mapProduct = jsonDecode(jsonProduct);
+    Product productAfterDecode = Product.fromJson(mapProduct);
+    debugPrint('productAfterDecode: ${productAfterDecode.toJson()}');
+  }
 
+  void serializeUser(){
+    var userJson = '''
+    {
+    "first_name": "John",
+    "last_name": "Doe"
+    }
+     ''';
+
+    User user = User.fromJson(jsonDecode(userJson));
+    debugPrint('User: ${user.toJson()}');
+
+  }
+
+  Future getItems() async {
     var results = await Future.wait([func1(), func2()]);
-    int result1 = results[0] as int ;
+    int result1 = results[0] as int;
     String result2 = results[1] as String;
     //await Future.delayed(Duration(seconds: 3));
     items.value = [

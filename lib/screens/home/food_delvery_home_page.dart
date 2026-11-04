@@ -41,7 +41,9 @@ class _FoodDelveryHomePageState extends State<FoodDelveryHomePage> {
               itemBuilder: (context, index) {
                 final item = controller.items.value[index];
                 if (item is HeaderListItem) {
-                  return HeaderListWidget(item: item, onTapLocation: () {});
+                  return HeaderListWidget(item: item, onTapLocation: () {}, onTapMenu: (){
+                    controller.serializeUser();
+                  },);
                 }
                 if (item is GreetingListItem) {
                   return GreetingWidget(item: item);
