@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:test_pam/models/order.dart';
 import 'package:test_pam/models/product.dart';
 import 'package:test_pam/models/user.dart';
 
@@ -21,10 +23,36 @@ class HomeController extends GetxController {
   Rxn<String> firstName = Rxn<String>();
   RxString lastName = RxString("");
 
+  late StreamSubscription subscription;
+
   @override
   void onInit() {
     super.onInit();
     getItems();
+    subscription = streamCounter().distinct().listen((value) {
+      debugPrint('value from stream: $value');
+    });
+    firstName.stream.listen((value) {
+      debugPrint('firstname $value');
+    });
+
+    Order order = Order(id: 1, title: 'First order');
+    order = order.copyWith(title: 'First order modified');
+    //  createStream();
+  }
+
+  void createStream() {
+    StreamController<String> controller = StreamController();
+
+    controller.add("Hello");
+    controller.add("Hello1");
+    controller.add("Hello2");
+    controller.add("Hello3");
+    controller.add("Hello4");
+
+    controller.stream.listen((value) {
+      debugPrint('value from controller: $value');
+    });
   }
 
   Future<int> run() async {
@@ -42,6 +70,15 @@ class HomeController extends GetxController {
     return 'Hello';
   }
 
+  Stream<int> streamCounter() async* {
+    int i = 0;
+    while (true) {
+      await Future.delayed((Duration(seconds: 1)));
+      i++;
+      yield 1;
+    }
+  }
+
   void serializeProduct() {
     Product product = Product(title: 'Product 1', price: 1.2);
     var jsonProduct = jsonEncode(product);
@@ -51,7 +88,7 @@ class HomeController extends GetxController {
     debugPrint('productAfterDecode: ${productAfterDecode.toJson()}');
   }
 
-  void serializeUser(){
+  void serializeUser() {
     var userJson = '''
     {
     "first_name": "John",
@@ -61,7 +98,6 @@ class HomeController extends GetxController {
 
     User user = User.fromJson(jsonDecode(userJson));
     debugPrint('User: ${user.toJson()}');
-
   }
 
   Future getItems() async {
@@ -95,5 +131,7 @@ class HomeController extends GetxController {
   }
 
   @override
-  void onClose() {}
+  void onClose() {
+    subscription.cancel();
+  }
 }
