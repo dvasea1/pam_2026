@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as httpClient;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:test_pam/models/feed.dart';
 import 'package:test_pam/models/order.dart';
 import 'package:test_pam/models/product.dart';
 import 'package:test_pam/models/user.dart';
@@ -25,9 +28,26 @@ class HomeController extends GetxController {
 
   late StreamSubscription subscription;
 
+  Dio dio = Dio(BaseOptions(baseUrl: 'https://test-api-jlbn.onrender.com/'));
+
   @override
   void onInit() {
     super.onInit();
+    dio.interceptors.add(LogInterceptor(responseBody: true));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+          debugPrint('onrequest: ' + options.path);
+          return handler.next(options);
+        },
+        onError: (DioException error, ErrorInterceptorHandler handler) {
+          debugPrint('Error in interceptor $error');
+          return handler.reject(error);
+        },
+      ),
+    );
+    //loadFeedHttp();
+    loadFeedDio();
     getItems();
     subscription = streamCounter().distinct().listen((value) {
       debugPrint('value from stream: $value');
@@ -76,6 +96,44 @@ class HomeController extends GetxController {
       await Future.delayed((Duration(seconds: 1)));
       i++;
       yield 1;
+    }
+  }
+
+  void loadFeedHttp() {
+    httpClient.get(Uri.parse('https://test-api-jlbn.onrender.com/lab2026/v2/feed')).then((response) {
+      debugPrint('response decode ' + Feed.fromJson(jsonDecode(response.body) as Map<String, dynamic>).user.name);
+    });
+  }
+
+  void loadFeedDio() {
+    dio.get('/lab2026/v2/feed').then((value) {
+      debugPrint('value from dio ${Feed.fromJson(value.data).user.name}');
+    });
+  }
+
+  void login() {
+    dio
+        .post('/auth/login', data: {'email': "alice.smith@example.com", 'password': "123"})
+        .then(
+          (value) {
+            debugPrint('$value');
+          },
+          onError: (error) {
+            if (error is DioException) {
+              debugPrint('Login error: ${Error.fromJson(error.response?.data).error}');
+            }
+          },
+        );
+  }
+
+  Future loginFuture() async {
+    try {
+      var response = await dio.post('/auth/login', data: {'email': "alice.smith@example.com", 'password': "1234"});
+      debugPrint('reponse $response');
+    } catch (ex) {
+      if (ex is DioException) {
+        debugPrint('Login error: ${Error.fromJson(ex.response?.data).error}');
+      }
     }
   }
 
